@@ -5,8 +5,13 @@ class UsuarioDAO{
     private $conexao;
 
 
+    public function __construct() {
+        $this->conexao = new Conexao();
+      }
+  
+
     public function login($login,$senha){
-        $sql = "SELECT * FROM usuario WHERE loginUsuario = '$login' AND senha = '$senha'";
+        $sql = "SELECT * FROM usuario WHERE nomeUsuario = '$login' AND senha = '$senha'";
 
         $executa = mysqli_query($this->conexao->getCon(), $sql);
 
@@ -18,9 +23,9 @@ class UsuarioDAO{
     }
 
     public function unico($login){
-        $sql = "SELECT * FROM usuario WHERE loginUsuario = '$login'";
+        $unic = "SELECT * FROM usuario WHERE nomeUsuario = '$login'";
 
-        $exec = mysqly_query($this->conexao->getCon(),$sql);
+        $exec = mysqli_query($this->conexao->getCon(), $unic);
 
         if(mysqli_num_rows($exec) > 0){
             return false;
@@ -29,15 +34,15 @@ class UsuarioDAO{
         }
     }
 
-    public function cadastra($login,$nome,$email,$senha,$confirmar_senha){
+    public function cadastra($login,$email,$senha){
 
-        $sql = "INSERT usuario(loginUsuario,nome,email,senha,confirmar_senha) VALUES ('$login','$nome','$email','$senha','$confirmar_senha')";
+        $sql = "INSERT usuario(nomeUsuario,email,senha) VALUES ('$login','$email','$senha')";
 
         $executa = mysqli_query($this->conexao->getCon(), $sql);
 
-        if(mysqli_affected_rows($this->conexao->getCon()) > ){
+        if(mysqli_affected_rows($this->conexao->getCon()) > 0) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }

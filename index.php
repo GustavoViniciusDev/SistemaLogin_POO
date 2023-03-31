@@ -1,3 +1,30 @@
+<?php
+
+  if($_POST) {
+    include ('classes/Conexao.php');
+    include ('classes/UsuarioDAO.php');
+
+    $usuario = new UsuarioDAO();
+
+    $login = addslashes($_POST['login']);
+    $senha = addslashes($_POST['senha']);
+
+    $user = $usuario->login($login, $senha);
+
+    if($user == true) {
+      session_start();
+      $_SESSION['login'] = $login;
+      $_SESSION['senha'] = $senha;
+      header('location: admin.php');
+    } else {
+      header('location:index.php?erro=senha');
+    }
+
+  }
+
+?>
+
+
 
 <!DOCTYPE html>
 <html lang="pt_BR">
@@ -21,10 +48,19 @@
     <title>Login de usuario</title>
   </head>
 <body>
+<?php
+
+if(isset($_GET['erro'])) {
+  echo '<div class="alert alert-danger">Dados de login incorretos</div>';
+}
+
+if(isset($_GET['success'])) {
+  echo '<div class="alert alert-success">Logout efetuado com sucesso</div>';
+}
+
+?>
 
 <div class="content">
-
-
     <div class="container">
       <div class="row">
         <div class="col-md-6">
@@ -41,7 +77,7 @@
             <form action="#" method="post" >
               <div class="form-group first">
                 <label for="username">Usuario</label>
-                <input type="text" class="form-control" name="usuario" id="username">
+                <input type="text" class="form-control" name="login" id="username">
 
               </div>
               <div class="form-group last mb-4">

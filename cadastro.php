@@ -1,3 +1,39 @@
+<?php
+
+  if(isset($_POST['cadastrar'])) {
+    include ('classes/Conexao.php');
+    include ('classes/UsuarioDAO.php');
+
+    $cadastrar = new UsuarioDAO();
+
+    $login = trim(strip_tags($_POST['login'])); // atribui login à variavel, com funções contra sql inject~
+    $email = trim(strip_tags($_POST['email'])); // atribui login à variavel, com funções contra sql inject
+    $senha = trim(strip_tags($_POST['senha'])); // atribui login à variavel, com funções contra sql inject
+    $rep_senha = trim(strip_tags($_POST['rep_senha'])); // atribui login à variavel, com funções contra sql inject
+
+    // confere se as senhas são iguais
+    if($senha === $rep_senha) {
+      $consulta = $cadastrar->unico($login);
+      // caso o login escolhido já exista no banco retorna erro
+      if($consulta == false) {
+        header('location:cadastro.php?repetido=senha');
+      // caso não haja login parecido, inclui métoro de inserção de dados no banco de dados
+      } else {
+        $insere = $cadastrar->cadastra($login,$email,$senha);
+        // caso o usuario seja cadastrado, exibir mensagem de sucesso
+        if($insere == true) {
+          header('location:cadastro.php?success=cadastrado');
+        }
+      }
+
+    } else {
+      header('location:cadastro.php?erro=senha');
+    }
+
+  }
+
+ ?>
+
 
 <!DOCTYPE html>
 <html lang="pt_BR">
@@ -62,7 +98,7 @@
             <form action="#" method="post" >
               <div class="form-group first">
                 <label for="username">Usuario</label>
-                <input type="text" class="form-control" name="usuario" id="username">
+                <input type="text" class="form-control" name="login" id="username">
               </div>
               <div class="form-group ">
                 <label for="username">Email</label>
@@ -75,17 +111,17 @@
               </div>
               <div  id="erroSenhaFraca">
               </div>
-              <!-- <div class="form-group" id="ifnSenha"></div> -->
+              
              
               <div class="form-group last mb-4">
                 <label for="password">Confirmar senha</label>
-                <input type="password" class="form-control" name="confirmar_senha" id="confpassword">
+                <input type="password" class="form-control" name="rep_senha" id="confpassword">
               </div>
               <div  id="erroConfirmarSenha">
               
               
 
-              <input type="submit" value="Criar conta" class="btn btn-block btn-primary">
+              <input type="submit" value="Criar conta" name="cadastrar" class="btn btn-block btn-primary">
 
               <div class="align-items-center">
                 <!-- <label class="control control--checkbox mb-0"><span class="caption">Lembrar de mim</span>
